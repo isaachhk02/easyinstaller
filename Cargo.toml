@@ -1,0 +1,17 @@
+[package]
+name = "easyinstaller"
+version = "0.1.0"
+description = "A GUI Package Installer for Linux"
+edition = "2024"
+authors = ["isaachhk02"]
+license = "MIT"
+[dependencies]
+dialog = "0.3.0"
+[package.metadata.rpm]
+package = "easyinstaller"
+
+[package.metadata.rpm.cargo]
+buildflags = ["--release"]
+
+[package.metadata.rpm.targets]
+easyinstaller = { path = "/usr/bin/easyinstaller" }
