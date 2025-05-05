@@ -5,7 +5,12 @@ use dialog::{DialogBox, Message, Question};
 
 
 
-pub fn welcome_screen(language: &str, package_manager: &str, package_path: &str) {
+pub fn welcome_screen(language: &str, package_manager: &str, package_path: &str, _action: &str) {
+    match _action {
+        "install" => "install".to_string(),
+        "remove" => "remove".to_string(),
+        _ => "install".to_string(),
+    };
     match package_manager {
         "apt" => "/usr/bin/apt",
         "dnf" => "/usr/bin/dnf",
@@ -38,7 +43,7 @@ pub fn welcome_screen(language: &str, package_manager: &str, package_path: &str)
     if welcomemsg.is_ok() {
         let install_question = Question::new(msg_confirm).title(title).show();
         if install_question.is_ok() {
-            install_package(language, package_manager, &package_path)
+            install_package(language, package_manager,&package_path,_action);
         }
         if install_question.is_err() {
             let cancel_message = match language {
@@ -62,15 +67,15 @@ pub fn welcome_screen(language: &str, package_manager: &str, package_path: &str)
         exit(-1);
     }
 }
-pub fn install_package(language: &str, package_manager: &str, package_path: &str) {
+pub fn install_package(language: &str, package_manager: &str, package_path: &str,_action: &str) {
     let update_cmd = format!("{} update", package_manager);
-    let install_cmd = format!("{} install {}", package_manager, package_path);
+    let cmd = format!("{} {} {}", package_manager,_action,package_path);
     let output = std::process::Command::new("pkexec")
         .arg("sh")
         .arg("-c")
         .arg(update_cmd)
         .arg("&&")
-        .arg(install_cmd)
+        .arg(cmd)
         .arg("-y")
         .output()
         .expect("Failed to execute command");
