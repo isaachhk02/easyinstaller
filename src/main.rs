@@ -1,16 +1,17 @@
 use std::env;
-mod language;
+mod lang;
 mod window;
 use dialog::DialogBox;
 use window::welcome_screen;
 
 fn main() {
-    let mut language = String::new();
+    let language;
     let mut args = env::args();
-    let mut path = String::new();
+    let mut path;
     if let Some(arg) = args.nth(1) {
+        
         path = arg;
-        match language::get_system_language() {
+        match lang::get_system_language() {
             Some(lang) => {
                 language = lang.to_string();
                 println!("System language detected: {}", lang);
