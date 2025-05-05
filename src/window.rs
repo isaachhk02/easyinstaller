@@ -63,31 +63,40 @@ pub fn welcome_screen(language: &str, package_manager: &str, package_path: &str)
     }
 }
 pub fn install_package(language: &str, package_manager: &str, package_path: &str) {
-    let command = format!("{} install -y {}", package_manager, package_path);
+    let update_cmd = format!("{} update", package_manager);
+    let install_cmd = format!("{} install {}", package_manager, package_path);
     let output = std::process::Command::new("pkexec")
         .arg("sh")
         .arg("-c")
-        .arg(command)
+        .arg(update_cmd)
+        .arg("&&")
+        .arg(install_cmd)
+        .arg("-y")
         .output()
         .expect("Failed to execute command");
-    if output.status.success() {
-        let success_message = match language {
-            "en_US" => "Package installed successfully!",
-            "fr_FR" => "Paquet installé avec succès !",
-            "es_ES" => "¡Paquete instalado con éxito!",
-            _ => "Package installed successfully!",
-        };
-        let success_message_obj = Message::new(success_message);
-        let _ = Zenity::new().show_message(&success_message_obj);
-    } else {
-        let error_message = match language {
-            "en_US" => "Failed to install package!",
-            "fr_FR" => "Échec de l'installation du paquet !",
-            "es_ES" => "¡Error al instalar el paquete!",
-            _ => "Failed to install package!",
-        };
-        let error_message_obj = Message::new(error_message);
-        let _ = Zenity::new().show_message(&error_message_obj);
+    match output.status.success() {
+        true => {
+            let success_message = match language {
+                    "en_US" => "Package installed successfully!",
+                    "fr_FR" => "Paquet installé avec succès !",
+                    "es_ES" => "¡Paquete instalado con éxito!",
+                    _ => "Package installed successfully!",
+                };
+            let success_message_obj = Message::new(success_message);
+            let _ = Zenity::new().show_message(&success_message_obj);
+        }
+        false => {
+            let error_message = match language {
+                "en_US" => "Failed to install package!", 
+                "fr_FR" => "Échec de l'installation du paquet !",
+                "es_ES" => "¡Error al instalar el paquete!",
+                _ => "Failed to install package!",
         
+            };
+            eprintln!{"Error code: {}",output.status};
+            let error_message_obj = Message::new(error_message);
+            let _ = Zenity::new().show_message(&error_message_obj);
+        
+        }
     }
 }
