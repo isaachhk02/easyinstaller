@@ -1,76 +1,63 @@
-use std::env::{self};
-mod lang;
+use std::env;
+mod language;
 mod window;
 use dialog::DialogBox;
-use window::welcome_screen;
+use window::installation_type;
 
 fn main() {
-    let language;
+    let mut language = String::new();
     let mut args = env::args();
-    let mut _action: String = String::new();
-    let mut path;
-    match args.nth(1) {
-        Some(action) => {
-            _action = action;
-            _action = if _action.is_empty() {
-                "install".to_string()
-            } else {
-                _action.clone()
-            };
-            path = match args.next() {
-                Some(arg) => arg,
-                None => {
-                    eprintln!("ERROR: No package specified!");
-                    return;
-                }
-            };
-            match lang::get_system_language() {
-                Some(lang) => {
-                    language = lang.to_string();
-                    println!("System language detected: {}", lang);
-                }
-                None => {
-                    println!("ERROR : Please set the language in the code!");
-                    return;
-                }
+    let path;
+    if let Some(arg) = args.nth(1) {
+        path = arg;
+        match language::get_system_language() {
+            Some(lang) => {
+                language = lang.to_string();
+                println!("System language detected: {}", lang);
             }
-            if path.ends_with(".deb") {
-                println!("Deb file detected!");
-                welcome_screen(language.as_str(), "apt", &path, &_action);
-            } else if path.ends_with(".rpm") {
-                println!("RPM file detected!");
-                welcome_screen(language.as_str(), "dnf", &path, &_action);
-            } else {
-                let file_chooser = dialog::FileSelection::new("Please select a file").show();
+            None => {
+                println!("ERROR : Please set the language in the code!");
+                return;
+            }
+        }
+        if path.ends_with(".deb") {
+            println!("Deb file detected!");
+            installation_type(language.as_str(),"apt", &path);
+        }
+        if path.ends_with(".rpm") {
+            println!("RPM file detected!");
+            installation_type(language.as_str(),"dnf", &path);
+        }
+    } else {
+        println!("No arguments provided. Please provide a file path.");
+        let file_chooser: Result<Option<String>, dialog::Error> = dialog::FileSelection::new("Please select a file").mode(dialog::FileSelectionMode::Open).show();
                 println!("File chooser: {:?}", file_chooser);
-                match file_chooser {
-                    Ok(file) => {
-                        if let Some(file_path) = file {
-                            path = file_path.to_string();
-                            if path.ends_with(".deb") {
-                                println!("Deb file detected!");
-                                welcome_screen(language.as_str(), "apt", &path, &_action);
-                            } else if path.ends_with(".rpm") {
-                                println!("RPM file detected!");
-                                welcome_screen(language.as_str(), "dnf", &path, &_action);
-                            } else {
-                                println!("ERROR : Please select a deb or rpm file!");
-                                return;
-                            }
+            match file_chooser {
+                Ok(file) => {
+                    if let Some(file_path) = file {
+                        path = file_path.to_string();
+                        if path.ends_with(".deb") {
+                            println!("Deb file detected!");
+                            installation_type(language.as_str(),"apt", &path);
+                        } else if path.ends_with(".rpm") {
+                            println!("RPM file detected!");
+                            installation_type(language.as_str(),"dnf", &path);
                         } else {
-                            println!("ERROR : No file selected!");
+                            println!("ERROR : Please select a deb or rpm file!");
                             return;
                         }
-                    }
-                    Err(_) => {
-                        println!("ERROR : Please select a deb or rpm file!");
+                    } else {
+                        println!("ERROR : No file selected!");
                         return;
                     }
+
+                }
+                Err(e) => {
+                    println!("ERROR : {}", e);
+                    return;
                 }
             }
-            println!("Language: {}", language);
-        }
-        None => eprintln!("easyInstaller 0.1 by isaachhk02\nSyntax:\neasyinstall [action] [package]\nActions:\ninstall:Install the package\nremove:Uninstall package\n")
-    } 
-    
+        
+        println!("Language: {}", language);
+    }
 }
