@@ -3,10 +3,10 @@ use dialog::{DialogBox, Message, Question, Choice};
 pub fn installation_type(language: &str, package_manager: &str, package_path: &str) {
     let uninstall;
     let install_or_remove_package_msgs = match language {
-        "en_US" => "Do you want to install or remove a package?",
+        "en_US" => "Do you want to install or remove a package ? (press yes to install or press no to uninstall)",
         "fr_FR" => "Voulez-vous installer ou supprimer un paquet?",
-        "es_ES" => "¿Quieres instalar o eliminar un paquete?",
-        _ => "Do you want to install or remove a package?",
+        "es_ES" => "¿Quieres instalar o eliminar un paquete? (Pulsa Si para instalar el paquete de lo contrario pulsa No para eliminarlo",
+        _ => "Do you want to install or remove a package ? (press yes to install or press no to uninstall)",
     };
 
     let install_or_remove_package = Question::new(install_or_remove_package_msgs).title("Do you want?").show();
