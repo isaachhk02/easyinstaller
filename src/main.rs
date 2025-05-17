@@ -31,7 +31,7 @@ fn main() {
             its_arch = 0;
             installation_type(language.as_str(), "dnf", &path, its_arch);
         }
-        if path.ends_with(".pkg.tar.xz") {
+        if path.ends_with(".pkg.tar.") {
             println!("PKG.TAR.XZ detected!");
             its_arch = 1;
             installation_type(language.as_str(), "pacman", &path, its_arch)
