@@ -5,6 +5,7 @@ description = "A GUI Package Installer for Linux"
 edition = "2024"
 authors = ["isaachhk02"]
 license = "MIT"
+readme = "README.md"
 [dependencies]
 dialog = "0.3.0"
 [package.metadata.rpm]

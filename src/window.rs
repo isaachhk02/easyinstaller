@@ -172,7 +172,7 @@ pub fn welcome_screen(
     ) {
         if its_arch == 1 {
             let _update_pkgs = format!("{} -Sy", package_manager);
-            let _command = format!("{} -S {} --noconfirm", package_manager, package_path);
+            let _command = format!("{} -U {} --noconfirm", package_manager, package_path);
         } else {
             let _update_pkgs = format!("{} update", package_manager);
             let _command = format!("{} install -y {}", package_manager, package_path);
