@@ -8,7 +8,15 @@
 
 `easyinstall package.rpm`
 
+`easyinstall package.pkg.tar.zst`
 
-Run it and select your package (RPM/DEB) (for the moment this packages available)
+`easyinstall package.pkg.tar.xz`
+
+
+Or run the command without args for choose a file for install:
+
+`easyinstaller`
+
+Run it and select your package (RPM/DEB/PKG.TAR.*) (for the moment this packages available)
 The program make a confirmation for install the package
 and finally answer for user password for install the package
