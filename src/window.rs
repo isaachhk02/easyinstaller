@@ -135,10 +135,13 @@ pub fn uninstall_package(language: &str, package_manager: &str, package_path: &s
     }
 }
 pub fn install_package(language: &str, package_manager: &str, package_path: &str) {
+    let update_pkgs = format!("{} update", package_manager);
     let command = format!("{} install -y {}", package_manager, package_path);
     let output = std::process::Command::new("pkexec")
         .arg("sh")
         .arg("-c")
+        .arg(update_pkgs)
+        .arg("&&")
         .arg(command)
         .output()
         .expect("Failed to execute command");
